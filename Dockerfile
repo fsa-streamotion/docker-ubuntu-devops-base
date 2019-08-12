@@ -30,4 +30,4 @@ RUN curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03
     wget https://raw.githubusercontent.com/johanhaleby/kubetail/master/kubetail && chmod +x kubetail && mv kubetail /usr/local/bin && \
     curl --location "https://github.com/weaveworks/eksctl/releases/download/${EKSCTL_VERSION}/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
     mv /tmp/eksctl /usr/local/bin && \
-    RUN echo 'export PATH=$PATH:/root/dev-cheats/' >> /root/.bashrc
+    echo 'export PATH=$PATH:/root/dev-cheats/' >> /root/.bashrc
