@@ -1,0 +1,1 @@
+for i in `sh ~/dev-cheats/print_asg.sh | jq -r '.name'`; do echo $i; sh ~/dev-cheats/scale_asg.sh $i 0;  done

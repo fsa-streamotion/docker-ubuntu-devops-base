@@ -1,0 +1,92 @@
+#!/bin/bash
+
+##### Functions
+
+function usage()
+{
+    echo -e "Usage: $0 'path/to/secret.yaml' (optional, defaults to 'current/path/secrets.yaml')"
+    echo -e "   -i 	Interactive mode to input file path"
+    echo -e "   -h	Prints help"
+    exit 1
+}
+
+function parse_yaml()
+{
+   input=$1
+
+   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+   echo "data:"
+   sed -n -e "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+          -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$input" |
+   awk -F$fs '{
+      key          = $2;
+      "echo "$3" | base64" | getline value;
+
+      printf("\ \ %s:\ %s\n", key, value);
+   }'
+}
+
+function validate_yaml()
+{
+  input=$1
+
+  local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+  lines=$(cat $input | wc -l)
+  if [ "$lines" -eq "0" ]; then
+    echo "File is empty"
+    exit 1
+  fi
+  kvs=$(sed -n -e "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$input" | wc -l)
+  if [ ! "$lines" -eq "$kvs" ]; then
+    echo "File did not parse correctly, ensure formatting matches:"
+    echo -e "KEY1: Value1\nKEY2: Value2"
+    exit 1
+  fi
+  printf "File contains %s kv pairs to encode\n\n" $kvs
+}
+##### Main
+
+interactive=
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -i | --interactive )    interactive=1
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     filename=$1
+    esac
+    shift
+done
+
+if [[ -z "${1// }" ]]; then
+    filename="$(pwd)/secrets.yaml"
+fi
+
+if [ "$interactive" = "1" ]; then
+
+    response=
+
+    echo -n "Enter name of input file [$filename] > "
+    read response
+    if [ -n "$response" ]; then
+        filename=$response
+    fi
+
+    if [ ! -f $filename ]; then
+        echo "File does not exist"
+        exit 1
+    fi
+fi
+
+if [ ! -e "$filename" ]; then
+    echo "File does not exist"
+    exit 1
+fi
+
+echo "Encoding secrets from file=$filename"
+
+validate_yaml $filename
+
+parse_yaml $filename
