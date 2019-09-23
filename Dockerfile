@@ -1,14 +1,26 @@
 FROM kayosportsau/ubuntu-okta:1.0.1
 
-ARG JX_VERSION=v2.0.420
+ARG KUBECTL_VERSION=v1.13.10
+ARG JX_VERSION=v2.0.775
 ARG EKSCTL_VERSION=latest_release
 
 ADD add/dev-cheats /root/dev-cheats
 
-RUN curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/kubectl && \
-    chmod +x ./kubectl && \
-    mkdir -p /root/bin && cp ./kubectl /root/bin/kubectl && export PATH=/root/bin:$PATH && \
-    curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator && \
+#Upgrade git version (needed for jx boot)
+RUN apt-get update && apt-get install -y software-properties-common && apt-get update && add-apt-repository ppa:git-core/ppa && apt-get update && apt-get -y  upgrade git
+
+#Install Hub
+RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
+    tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
+    echo 'export PATH=$PATH:/usr/local/hub-linux/bin' >> /root/.bashrc    
+
+#kubectl
+RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
+    curl -L https://amazon-eks.s3-us-west-2.amazonaws.com/${IAM_AUTHENTICATOR_VERSION}/bin/linux/amd64/aws-iam-authenticator -o /usr/local/bin/aws-iam-authenticator && \
+    chmod +x /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/aws-iam-authenticator
+
+RUN curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator && \
     chmod +x ./aws-iam-authenticator && \
     mkdir -p /root/bin && cp ./aws-iam-authenticator /root/bin/aws-iam-authenticator && export PATH=/root/bin:$PATH && \
     echo 'export PATH=/root/bin:$PATH' >> /root/.bashrc && \
