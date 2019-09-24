@@ -14,6 +14,15 @@ RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-am
     tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
     echo 'export PATH=$PATH:/usr/local/hub-linux/bin' >> /root/.bashrc    
 
+
+ENV TZ 'Australia/Sydney'
+RUN echo $TZ > /etc/timezone && \
+apt-get update && apt-get install -y tzdata && \
+rm /etc/localtime && \
+ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+dpkg-reconfigure -f noninteractive tzdata && \
+apt-get clean
+
 #kubectl
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
     curl -L https://amazon-eks.s3-us-west-2.amazonaws.com/${IAM_AUTHENTICATOR_VERSION}/bin/linux/amd64/aws-iam-authenticator -o /usr/local/bin/aws-iam-authenticator && \
