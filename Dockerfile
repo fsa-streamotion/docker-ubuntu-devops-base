@@ -1,7 +1,7 @@
 FROM kayosportsau/ubuntu-okta:1.0.1
 
 ARG KUBECTL_VERSION=v1.13.10
-ARG JX_VERSION=v2.0.775
+ARG JX_VERSION=v2.0.800
 ARG EKSCTL_VERSION=latest_release
 
 ADD add/dev-cheats /root/dev-cheats
