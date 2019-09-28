@@ -14,6 +14,16 @@ RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-am
     tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
     echo 'export PATH=$PATH:/usr/local/hub-linux/bin' >> /root/.bashrc    
 
+ENV TZ='Australia/Sydney'
+ENV DEBIAN_FRONTEND=noninteractive
+#install tzdata package
+RUN echo $TZ > /etc/timezone && \
+        apt-get update && apt-get install -y tzdata && \
+        rm /etc/localtime && \
+        ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+        dpkg-reconfigure -f noninteractive tzdata && \
+        apt-get clean
+
 #kubectl
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
     curl -L https://amazon-eks.s3-us-west-2.amazonaws.com/${IAM_AUTHENTICATOR_VERSION}/bin/linux/amd64/aws-iam-authenticator -o /usr/local/bin/aws-iam-authenticator && \
@@ -43,3 +53,8 @@ RUN curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/
     curl --location "https://github.com/weaveworks/eksctl/releases/download/${EKSCTL_VERSION}/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
     mv /tmp/eksctl /usr/local/bin && \
     echo 'export PATH=$PATH:/root/dev-cheats/' >> /root/.bashrc
+
+# Node.js
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g serverless
