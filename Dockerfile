@@ -7,7 +7,11 @@ ARG EKSCTL_VERSION=latest_release
 ADD add/dev-cheats /root/dev-cheats
 
 #Upgrade git version (needed for jx boot)
-RUN apt-get update && apt-get install -y software-properties-common && apt-get update && add-apt-repository ppa:git-core/ppa && apt-get update && apt-get -y  upgrade git
+RUN apt-get update && apt-get install -y software-properties-common && \
+    apt-get update && add-apt-repository ppa:git-core/ppa && \
+    apt-get update && apt-get -y  upgrade git
+    
+RUN apt-get install -y openjdk-8-jdk    
 
 #Install Hub
 RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
