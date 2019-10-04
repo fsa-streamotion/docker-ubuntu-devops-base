@@ -1,4 +1,4 @@
-FROM kayosportsau/ubuntu-okta:1.0.1
+FROM kayosportsau/ubuntu-base:1.0.4
 
 ARG KUBECTL_VERSION=v1.13.10
 ARG JX_VERSION=v2.0.800
@@ -6,12 +6,13 @@ ARG EKSCTL_VERSION=latest_release
 
 ADD add/dev-cheats /root/dev-cheats
 
-#Upgrade git version (needed for jx boot)
-RUN apt-get update && apt-get install -y software-properties-common && \
-    apt-get update && add-apt-repository ppa:git-core/ppa && \
-    apt-get update && apt-get -y  upgrade git
-    
-RUN apt-get install -y openjdk-8-jdk    
+ADD add/okta /tmp/okta
+
+RUN mkdir /opt/okta-utils && \
+    cd /tmp/okta && \
+    mv oktashell.sh /usr/local/bin && \
+    mv oktashell assumerole requirements.txt /opt/okta-utils && \
+    pip3 install --no-cache-dir -r /opt/okta-utils/requirements.txt
 
 #Install Hub
 RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
