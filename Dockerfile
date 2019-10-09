@@ -52,6 +52,7 @@ RUN curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/
     wget -O helmfile https://github.com/roboll/helmfile/releases/download/v0.80.0/helmfile_linux_amd64 && \
     chmod +x ./helmfile && \
     cp ./helmfile /root/bin/helmfile && \
+    echo "source /usr/share/bash-completion/bash_completion" >> /root/.bashrc && \
     echo "source <(kubectl completion bash)" >> /root/.bashrc && \
     echo "source <(jx completion bash)" >> /root/.bashrc && \
     wget https://raw.githubusercontent.com/johanhaleby/kubetail/master/kubetail && chmod +x kubetail && mv kubetail /usr/local/bin && \
