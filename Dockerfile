@@ -82,7 +82,7 @@ RUN curl -L https://github.com/heptio/velero/releases/download/v${VELERO_VERSION
 
 ARG KFCTL_VERSION=v0.6.2
 RUN cd /tmp/ && wget https://github.com/kubeflow/kubeflow/releases/download/v0.6.2/kfctl_${KFCTL_VERSION}_linux.tar.gz && \
-    tar -xvzf kfctl_${KFCTL_VERSION}_linux.tar.gz && chmod +x kfctl && mv kfctl /usr/local/bin/
+    tar -xvzf kfctl_${KFCTL_VERSION}_linux.tar.gz && chmod +x kfctl && mv kfctl /usr/local/bin/ && rm -rf kfctl_${KFCTL_VERSION}_linux.tar.gz
 
 # Node.js
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
