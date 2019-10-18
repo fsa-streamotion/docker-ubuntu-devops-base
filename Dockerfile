@@ -1,4 +1,4 @@
-FROM kayosportsau/ubuntu-base:1.0.7
+FROM kayosportsau/ubuntu-base:1.0.8
 
 ARG KUBECTL_VERSION=v1.13.10
 ARG JX_VERSION=v2.0.800
