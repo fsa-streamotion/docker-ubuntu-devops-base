@@ -6,7 +6,6 @@ ARG EKSCTL_VERSION=latest_release
 ARG KUSTOMIZE_VERSION=2.0.3
 ARG VELERO_VERSION="0.11.0"
 ARG ARGO_VERSION=v1.2.3
-ARG KUBESEAL_VERSION=v0.9.2
 
 ADD add/dev-cheats /root/dev-cheats
 
@@ -91,5 +90,6 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     npm install -g serverless
 
 # kubeseal
+ARG KUBESEAL_VERSION=v0.9.2
 RUN wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-linux-amd64 -O kubeseal && \
-    sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+    install -m 755 kubeseal /usr/local/bin/kubeseal
