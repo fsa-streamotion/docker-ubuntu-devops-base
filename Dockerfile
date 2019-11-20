@@ -15,7 +15,8 @@ RUN mkdir /opt/okta-utils && \
     cd /tmp/okta && \
     mv oktashell.sh /usr/local/bin && \
     mv oktashell assumerole requirements.txt /opt/okta-utils && \
-    pip3 install --no-cache-dir -r /opt/okta-utils/requirements.txt
+    pip3 install --no-cache-dir -r /opt/okta-utils/requirements.txt && \
+    pip3 install sceptre-aws-resolver
 
 #Install Hub
 RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
