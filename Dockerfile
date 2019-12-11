@@ -91,6 +91,6 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     npm install -g serverless
 
 # kubeseal
-ARG KUBESEAL_VERSION=v0.9.2
+ARG KUBESEAL_VERSION=v0.9.6
 RUN wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-linux-amd64 -O kubeseal && \
     install -m 755 kubeseal /usr/local/bin/kubeseal
