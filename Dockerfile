@@ -21,7 +21,7 @@ RUN mkdir /opt/okta-utils && \
 #Install Hub
 RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
     tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
-    echo 'export PATH=$PATH:/usr/local/hub-linux/bin' >> /root/.bashrc    
+    echo 'export PATH=$PATH:/usr/local/hub-linux/bin' >> /root/.bashrc        
 
 
 RUN     rm /etc/localtime && \
@@ -99,3 +99,6 @@ RUN wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBE
 RUN pip3 install mkdocs
 
 RUN pip3 install cfn_flip==1.2.2 ipdb
+
+RUN echo export LC_ALL=C.UTF-8 >> /root/.bashrc
+RUN echo export LANG=C.UTF-8   >> /root/.bashrc
