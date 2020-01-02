@@ -96,4 +96,6 @@ RUN wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBE
     install -m 755 kubeseal /usr/local/bin/kubeseal
 
 # mkdocs to generate nicer doc from readme files
-RUN pip install mkdocs
+RUN pip3 install mkdocs
+
+RUN pip3 install cfn_flip==1.2.2 ipdb
