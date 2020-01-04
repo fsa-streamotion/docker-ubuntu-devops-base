@@ -6,7 +6,37 @@ export KUSTOMIZE_VERSION=2.0.3
 export VELERO_VERSION="0.11.0"
 export ARGO_VERSION=v1.2.3
 
-
+apt-get update && apt-get install -y software-properties-common && \
+    apt-get install -y software-properties-common && \
+    apt-get update && apt-get -y  upgrade git && \    	
+    apt-get install -y \
+        iputils-ping \
+        openjdk-8-jdk \
+        ca-certificates \
+        groff \
+        vim \
+        less \
+        bash-completion \
+        make \
+        curl \
+        wget \
+        zip \
+        telnet \
+        git \
+        tree \
+        openssl \
+        gcc \
+        jq \
+        tmux \
+        gettext \
+        python3 \
+        python3-pip \
+        tzdata && apt-get clean && \
+        pip3 install --no-cache-dir --upgrade \
+        sceptre>=2.1.3 \
+        troposphere>=2.0.0 \
+        awscli
+        
 # cp -r add/okta /tmp/okta && mkdir /opt/okta-utils && \
 #     cd /tmp/okta && \
 #     cp oktashell.sh /usr/local/bin && \
@@ -89,7 +119,7 @@ curl -O -L https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUS
 #     npm install -g serverless
 
 # # kubeseal
-# ARG KUBESEAL_VERSION=v0.9.6
+export KUBESEAL_VERSION=v0.9.6
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-linux-amd64 -O kubeseal && \
     install -m 755 kubeseal /usr/local/bin/kubeseal
 
