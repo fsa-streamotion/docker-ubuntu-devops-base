@@ -1,4 +1,4 @@
-FROM kayosportsau/ubuntu-base:1.0.8
+FROM kayosportsau/ubuntu-base:1.0.12
 
 ARG KUBECTL_VERSION=v1.14.9
 ARG JX_VERSION=v2.0.800
@@ -99,6 +99,16 @@ RUN wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBE
 RUN pip3 install mkdocs
 
 RUN pip3 install cfn_flip==1.2.2 ipdb
+
+#AWLESS (tool for aws commandline)
+RUN curl https://raw.githubusercontent.com/wallix/awless/master/getawless.sh | bash 
+RUN mv awless /usr/local/bin/ && echo 'source <(awless completion bash)' >> /root/.bashrc
+
+RUN echo "complete -C '/usr/local/bin/aws_completer' aws" >> /root/.bashrc
+RUN kubectl completion bash >/etc/bash_completion.d/kubectl
+RUN echo 'complete -F __start_kubectl k' >>~/.bashrc
+
+
 
 RUN echo export LC_ALL=C.UTF-8 >> /root/.bashrc
 RUN echo export LANG=C.UTF-8   >> /root/.bashrc
