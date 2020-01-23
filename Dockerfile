@@ -18,6 +18,13 @@ RUN mkdir /opt/okta-utils && \
     pip3 install --no-cache-dir -r /opt/okta-utils/requirements.txt && \
     pip3 install sceptre-aws-resolver
 
+#Sceptre custom hooks
+RUN git clone \
+      https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
+      /tmp/sceptre-stack-termination-protection-hook && \
+    cd /tmp/sceptre-stack-termination-protection-hook && \
+    python3 setup.py install
+
 #Install Hub
 RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
     tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
