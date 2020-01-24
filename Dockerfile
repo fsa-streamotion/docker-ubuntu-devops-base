@@ -108,8 +108,12 @@ RUN pip3 install mkdocs
 RUN pip3 install cfn_flip==1.2.2 ipdb
 
 #AWLESS (tool for aws commandline)
-RUN curl https://raw.githubusercontent.com/wallix/awless/master/getawless.sh | bash 
-RUN mv awless /usr/local/bin/ && echo 'source <(awless completion bash)' >> /root/.bashrc
+RUN wget https://github.com/wallix/awless/releases/download/v0.1.11/awless-linux-amd64.tar.gz && \
+    tar -xvzf awless-linux-amd64.tar.gz && \
+    rm -rf awless-linux-amd64.tar.gz && \
+    chmod +x awless && \
+    mv awless /usr/local/bin/ && \
+    echo 'source <(awless completion bash)' >> /root/.bashrc
 
 RUN echo "complete -C '/usr/local/bin/aws_completer' aws" >> /root/.bashrc
 RUN kubectl completion bash >/etc/bash_completion.d/kubectl
