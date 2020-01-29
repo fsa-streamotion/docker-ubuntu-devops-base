@@ -16,6 +16,7 @@ RUN mkdir /opt/okta-utils && \
     mv oktashell.sh /usr/local/bin && \
     mv oktashell assumerole requirements.txt /opt/okta-utils && \
     pip3 install --no-cache-dir -r /opt/okta-utils/requirements.txt && \
+    pip3 install --no-cache-dir aws-sam-cli==0.40.0 && \
     pip3 install sceptre-aws-resolver
 
 #Sceptre custom hooks
