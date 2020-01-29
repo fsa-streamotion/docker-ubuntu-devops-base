@@ -115,6 +115,12 @@ RUN wget https://github.com/wallix/awless/releases/download/v0.1.11/awless-linux
     mv awless /usr/local/bin/ && \
     echo 'source <(awless completion bash)' >> /root/.bashrc
 
+RUN cd /tmp && \
+    wget https://github.com/jenkins-x/jx-release-version/releases/download/v1.0.24/jx-release-version_1.0.24_linux_amd64.tar.gz && \
+    tar -xvzf jx-release-version_1.0.24_linux_amd64.tar.gz && chmod +x jx-release-version && mv jx-release-version /usr/local/bin && \
+    rm -rf /tmp/* 
+
+
 RUN echo "complete -C '/usr/local/bin/aws_completer' aws" >> /root/.bashrc
 RUN kubectl completion bash >/etc/bash_completion.d/kubectl
 RUN echo 'complete -F __start_kubectl k' >>~/.bashrc
