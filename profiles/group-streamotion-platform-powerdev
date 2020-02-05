@@ -1,4 +1,0 @@
-[profile martian-foxsports-nonprod]
-role_arn = arn:aws:iam::856308764217:role/group-streamotion-platform-powerdev
-source_profile = okta
-region = ap-southeast-2

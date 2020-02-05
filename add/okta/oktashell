@@ -9,7 +9,6 @@ from time import sleep
 from xml.etree import ElementTree
 from configparser import ConfigParser
 import yaml
-from shutil import copyfile
 
 import boto3
 import botocore.exceptions
@@ -427,14 +426,6 @@ if __name__ == '__main__':
                     os.environ.get('IDP_TOKEN_ROLE') if args.reauth else None,
                 )
             duration, env = assume_role(role, saml_assertion, args.duration)
-
-            profile_file = os.path.join('profiles', role.split('/')[1])
-
-            if os.path.isfile(profile_file):
-                config_file_path = os.environ['HOME'] + \
-                    '/.aws/config'
-                copyfile(profile_file, config_file_path)
-
             env['IDP_TOKEN_APP'] = app_name
             sys.stdout, sys.stderr = sys.stderr, sys.stdout
 
