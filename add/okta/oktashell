@@ -357,13 +357,14 @@ def get_app_config():
 def update_config_file(pattern, role):
     config_file_path = os.environ['HOME'] + \
             '/.aws/config'
+    bak_config_file_path = config_file_path + '.bak'
 
-    if not os.path.isfile(config_file_path):
-        print("Config file %s not found, cannot update it with %s" \
-                % (config_file_path, role))
+    if not os.path.isfile(bak_config_file_path):
+        print("Config file %s not found, cannot update %s" \
+                % (bak_config_file_path, config_file_path))
         return
 
-    with open(config_file_path, 'rt') as fin:
+    with open(bak_config_file_path, 'rt') as fin:
         text_data = fin.read()
 
     with open(config_file_path, 'wt') as fout:
