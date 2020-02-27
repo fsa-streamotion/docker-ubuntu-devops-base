@@ -1,1 +1,8 @@
-.code-workspace.code-workspace
+**/env.yaml
+.env
+.DS_Store
+tmp/amazon-eks-nodegroup.yaml
+venv
+.compiled-j2
+data
+*__pycache__*
