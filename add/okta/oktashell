@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import base64
 from datetime import datetime
 import getpass
@@ -14,6 +15,8 @@ import boto3
 import botocore.exceptions
 from bs4 import BeautifulSoup
 import requests
+
+from shutil import copyfile
 
 requests = requests.Session()
 
@@ -354,21 +357,30 @@ def get_app_config():
     return config
 
 
-def update_config_file(pattern, role):
-    config_file_path = os.environ['HOME'] + \
-            '/.aws/config'
-    bak_config_file_path = config_file_path + '.bak'
-
-    if not os.path.isfile(bak_config_file_path):
-        print("Config file %s not found, cannot update %s" \
-                % (bak_config_file_path, config_file_path))
+def write_config_file(role_arn):
+    if 'NO_USE_LOCAL' in os.environ:
         return
 
-    with open(bak_config_file_path, 'rt') as fin:
-        text_data = fin.read()
+    config_file_path = os.environ['HOME'] + \
+            '/.aws/config'
 
-    with open(config_file_path, 'wt') as fout:
-        fout.write(text_data.replace(pattern, role))
+    if not os.path.exists(os.path.dirname(config_file_path)):
+        return
+
+    if os.path.exists(config_file_path):
+        bak_config_file_path = config_file_path + '.bak'
+        copyfile(config_file_path, bak_config_file_path)
+
+    profile = os.environ['AWS_PROFILE']
+
+    content = "[default]\n"\
+            "region = ap-southeast-2\n\n"\
+            "[profile {}]\n"\
+            "role_arn = {}\n"\
+            .format(profile, role_arn)
+
+    with open(config_file_path, 'w') as fout:
+        fout.write(content)
 
 
 if __name__ == '__main__':
@@ -443,7 +455,7 @@ if __name__ == '__main__':
                     os.environ.get('IDP_TOKEN_ROLE') if args.reauth else None,
                 )
 
-            update_config_file('##ROLE_ARN##', role)
+            write_config_file(role)
 
             duration, env = assume_role(role, saml_assertion, args.duration)
             env['IDP_TOKEN_APP'] = app_name
