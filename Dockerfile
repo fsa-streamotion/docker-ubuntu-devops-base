@@ -19,6 +19,25 @@ RUN mkdir /opt/okta-utils && \
     pip3 install --no-cache-dir aws-sam-cli==0.40.0 && \
     pip3 install sceptre-aws-resolver
 
+#Python tests
+RUN pip3 install yq==2.10.0 && \
+    pip3 install yamllint==1.20.0 && \
+    pip3 install cfn_flip==1.2.2 && \
+    pip3 install ipdb==0.12.3 && \
+    pip3 install pathlib==1.0.1
+
+#Ruby
+RUN apt-get install -y libssl-dev libreadline-dev zlib1g-dev
+RUN git clone https://github.com/rbenv/ruby-build.git && \
+    PREFIX=/usr/local ./ruby-build/install.sh && \
+    ruby-build -v 2.4.1 /usr/local
+
+RUN git clone \
+      https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
+      /tmp/sceptre-stack-termination-protection-hook && \
+    cd /tmp/sceptre-stack-termination-protection-hook && \
+    python3 setup.py install
+
 #Sceptre custom hooks
 RUN git clone \
       https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
@@ -31,10 +50,9 @@ RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-am
     tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
     echo 'export PATH=$PATH:/usr/local/hub-linux/bin' >> /root/.bashrc        
 
-
-RUN     rm /etc/localtime && \
-        ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
-        dpkg-reconfigure -f noninteractive tzdata
+RUN rm /etc/localtime && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
 
 #kubectl
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
