@@ -32,6 +32,20 @@ RUN git clone https://github.com/rbenv/ruby-build.git && \
     PREFIX=/usr/local ./ruby-build/install.sh && \
     ruby-build -v 2.4.1 /usr/local
 
+#Shunit2 for Bash unit tests
+RUN curl \
+      https://raw.githubusercontent.com/kward/shunit2/c47d32d6af2998e94bbb96d58a77e519b2369d76/shunit2 \
+      -o /tmp/shunit2 && \
+    mv /tmp/shunit2 /usr/local/bin
+
+RUN curl \
+      https://raw.githubusercontent.com/alexharv074/scripts/master/DiffHighlight.pl \
+      -o /tmp/DiffHighlight.pl && \
+    mv /tmp/DiffHighlight.pl /usr/local/bin && \ 
+    chmod +x /usr/local/bin/DiffHighlight.pl
+
+RUN apt-get install apt-utils colordiff
+
 #Sceptre custom hooks
 RUN git clone \
       https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
