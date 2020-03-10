@@ -32,12 +32,6 @@ RUN git clone https://github.com/rbenv/ruby-build.git && \
     PREFIX=/usr/local ./ruby-build/install.sh && \
     ruby-build -v 2.4.1 /usr/local
 
-RUN git clone \
-      https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
-      /tmp/sceptre-stack-termination-protection-hook && \
-    cd /tmp/sceptre-stack-termination-protection-hook && \
-    python3 setup.py install
-
 #Sceptre custom hooks
 RUN git clone \
       https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
