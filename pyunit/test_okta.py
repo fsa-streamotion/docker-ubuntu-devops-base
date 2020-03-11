@@ -44,11 +44,6 @@ class TestWriteConfigFile(unittest.TestCase):
         with open(myfile) as myfile:
             self.assertTrue('foo' in myfile.read())
 
-    def test_write_config_no_use_local(self):
-        os.environ['NO_USE_LOCAL'] = 'true'
-        write_config_file('foo')
-        self.assertFalse(os.path.exists('/tmp/.aws/config'))
-
 
 def main():
     unittest.main()

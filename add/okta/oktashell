@@ -15,6 +15,7 @@ import boto3
 import botocore.exceptions
 from bs4 import BeautifulSoup
 import requests
+import subprocess
 
 from shutil import copyfile
 
@@ -358,7 +359,8 @@ def get_app_config():
 
 
 def write_config_file(role_arn):
-    if 'NO_USE_LOCAL' in os.environ:
+    mount = subprocess.run(['mount'], check=True, stdout=subprocess.PIPE, universal_newlines=True)
+    if 'osxfs on /root/.aws' not in mount.stdout:
         return
 
     config_file_path = os.environ['HOME'] + \
