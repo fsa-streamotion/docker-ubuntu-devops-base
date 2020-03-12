@@ -33,6 +33,15 @@ class TestWriteConfigFile(unittest.TestCase):
         os.environ['FULL_MODE'] = 'true'
         os.mkdir('/tmp/.aws')
 
+        content = "[default]\n"\
+                "region = ap-southeast-2\n\n"\
+                "[profile {}]\n"\
+                "role_arn = {}\n"\
+                .format('foo', 'bar')
+
+        with open('/tmp/.aws/config', 'w') as fout:
+            fout.write(content)
+
     def tearDown(self):
         for fil in ['/tmp/.aws/config.bak','/tmp/.aws/config']:
             if os.path.exists(fil):
@@ -41,9 +50,16 @@ class TestWriteConfigFile(unittest.TestCase):
 
     def test_write_config_file_simplest(self):
         myfile = '/tmp/.aws/config'
-        write_config_file('foo')
+        write_config_file('baz')
         with open(myfile) as myfile:
-            self.assertTrue('foo' in myfile.read())
+            self.assertTrue('baz' in myfile.read())
+
+    def test_full_mode_false(self):
+        myfile = '/tmp/.aws/config'
+        del os.environ['FULL_MODE']
+        write_config_file('baz')
+        with open(myfile) as myfile:
+            self.assertFalse('baz' in myfile.read())
 
 
 def main():

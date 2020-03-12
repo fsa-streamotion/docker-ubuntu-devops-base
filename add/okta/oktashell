@@ -361,7 +361,7 @@ def get_app_config():
 def write_config_file(role_arn):
 
     # Set by using -f in run.sh
-    if 'FULL_MODE' in os.environ:
+    if 'FULL_MODE' not in os.environ:
         return
 
     config_file_path = os.environ['HOME'] + \
