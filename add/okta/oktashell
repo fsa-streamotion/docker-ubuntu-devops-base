@@ -359,8 +359,9 @@ def get_app_config():
 
 
 def write_config_file(role_arn):
-    mount = subprocess.run(['mount'], check=True, stdout=subprocess.PIPE, universal_newlines=True)
-    if 'osxfs on /root/.aws' in mount.stdout:
+
+    # Set by using -f in run.sh
+    if 'FULL_MODE' in os.environ:
         return
 
     config_file_path = os.environ['HOME'] + \

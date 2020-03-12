@@ -30,6 +30,7 @@ class TestWriteConfigFile(unittest.TestCase):
     def setUp(self):
         os.environ['HOME'] = '/tmp'
         os.environ['AWS_PROFILE'] = 'streamotion-platform-nonprod'
+        os.environ['FULL_MODE'] = 'true'
         os.mkdir('/tmp/.aws')
 
     def tearDown(self):
