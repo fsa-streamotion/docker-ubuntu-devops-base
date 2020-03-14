@@ -376,10 +376,12 @@ def write_config_file(role_arn):
 
     profile = os.environ['AWS_PROFILE']
 
-    content = "[default]\n"\
+    content = "[okta]\n"\
             "region = ap-southeast-2\n\n"\
             "[profile {}]\n"\
             "role_arn = {}\n"\
+            "source_profile = okta\n"\
+            "region = ap-southeast-2\n"\
             .format(profile, role_arn)
 
     with open(config_file_path, 'w') as fout:
