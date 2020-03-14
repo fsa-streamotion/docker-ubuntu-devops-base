@@ -147,10 +147,15 @@ RUN cd /tmp && \
     tar -xvzf jx-release-version_1.0.24_linux_amd64.tar.gz && chmod +x jx-release-version && mv jx-release-version /usr/local/bin && \
     rm -rf /tmp/* 
 
+RUN cd /tmp && \
+    curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.5.0 sh - && \
+    mv istio-1.5.0/bin/istioctl /usr/local/bin/ && chmod +x /usr/local/bin/istioctl && \
+    rm -rf /tmp/*
 
 RUN echo "complete -C '/usr/local/bin/aws_completer' aws" >> /root/.bashrc
 RUN kubectl completion bash >/etc/bash_completion.d/kubectl
 RUN echo 'complete -F __start_kubectl k' >>~/.bashrc
+
 
 
 
