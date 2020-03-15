@@ -16,6 +16,7 @@ import botocore.exceptions
 from bs4 import BeautifulSoup
 import requests
 import subprocess
+import re
 
 from shutil import copyfile
 
@@ -358,34 +359,54 @@ def get_app_config():
     return config
 
 
-def write_config_file(role_arn):
+class ConfigWriter():
 
-    # Set by using -f in run.sh
-    if 'FULL_MODE' not in os.environ:
-        return
+    def __init__(self):
+        pass
 
-    config_file_path = os.environ['HOME'] + \
-            '/.aws/config'
+    def write_config_file(self, role_arn):
 
-    if not os.path.exists(os.path.dirname(config_file_path)):
-        return
+        # Set by using -f in run.sh
+        if 'FULL_MODE' not in os.environ:
+            return
 
-    if os.path.exists(config_file_path):
-        bak_config_file_path = config_file_path + '.bak'
-        copyfile(config_file_path, bak_config_file_path)
+        config_file_path = os.environ['HOME'] + \
+                '/.aws/config'
 
-    profile = os.environ['AWS_PROFILE']
+        if not os.path.exists(os.path.dirname(config_file_path)):
+            return
 
-    content = "[okta]\n"\
-            "region = ap-southeast-2\n\n"\
-            "[profile {}]\n"\
-            "role_arn = {}\n"\
-            "source_profile = okta\n"\
-            "region = ap-southeast-2\n"\
-            .format(profile, role_arn)
+        if os.path.exists(config_file_path):
+            bak_config_file_path = config_file_path + '.bak'
+            copyfile(config_file_path, bak_config_file_path)
 
-    with open(config_file_path, 'w') as fout:
-        fout.write(content)
+        profile = os.environ['AWS_PROFILE']
+
+        role_arn = self._replace_profile(role_arn, profile)
+
+        content = "[okta]\n"\
+                "region = ap-southeast-2\n\n"\
+                "[profile {}]\n"\
+                "role_arn = {}\n"\
+                "source_profile = okta\n"\
+                "region = ap-southeast-2\n"\
+                .format(profile, role_arn)
+
+        with open(config_file_path, 'w') as fout:
+            fout.write(content)
+
+    def _replace_profile(self, role_arn, profile):
+
+        with open('account-mapping.yml', 'r') as stream:
+            try:
+                account_mapping = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        account_id = account_mapping[profile]
+
+        return re.sub(r'arn:aws:iam::\d+', \
+                'arn:aws:iam::' + str(account_id), role_arn)
 
 
 if __name__ == '__main__':

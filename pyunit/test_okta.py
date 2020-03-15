@@ -50,16 +50,20 @@ class TestWriteConfigFile(unittest.TestCase):
 
     def test_write_config_file_simplest(self):
         myfile = '/tmp/.aws/config'
-        write_config_file('baz')
+        writer = ConfigWriter()
+        writer.write_config_file(
+                'arn:aws:iam::845133584691:role/group-streamotion-platform-powerdev')
         with open(myfile) as myfile:
-            self.assertTrue('baz' in myfile.read())
+            self.assertTrue('841472843274' in myfile.read())
 
     def test_full_mode_false(self):
         myfile = '/tmp/.aws/config'
         del os.environ['FULL_MODE']
-        write_config_file('baz')
+        writer = ConfigWriter()
+        writer.write_config_file(
+                'arn:aws:iam::845133584691:role/group-streamotion-platform-powerdev')
         with open(myfile) as myfile:
-            self.assertFalse('baz' in myfile.read())
+            self.assertFalse('841472843274' in myfile.read())
 
 
 def main():
