@@ -397,7 +397,7 @@ class ConfigWriter():
 
     def _replace_profile(self, role_arn, profile):
 
-        with open('account-mapping.yml', 'r') as stream:
+        with open('/opt/okta-utils/account-mapping.yml', 'r') as stream:
             try:
                 account_mapping = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
