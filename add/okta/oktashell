@@ -397,7 +397,7 @@ class ConfigWriter():
 
     def _replace_profile(self, role_arn, profile):
 
-        with open('/opt/okta-utils/account-mapping.yml', 'r') as stream:
+        with open(self.__account_mapping_file(), 'r') as stream:
             try:
                 account_mapping = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
@@ -407,6 +407,15 @@ class ConfigWriter():
 
         return re.sub(r'arn:aws:iam::\d+', \
                 'arn:aws:iam::' + str(account_id), role_arn)
+
+    def __account_mapping_file(self):
+        account_mapping_paths = [
+            '/opt/okta-utils/account-mapping.yml',
+            'account-mapping.yml']
+
+        for path in account_mapping_paths:
+            if os.path.exists(path):
+                return path
 
 
 if __name__ == '__main__':
