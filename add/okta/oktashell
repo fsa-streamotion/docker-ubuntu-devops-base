@@ -481,7 +481,8 @@ if __name__ == '__main__':
                     os.environ.get('IDP_TOKEN_ROLE') if args.reauth else None,
                 )
 
-            write_config_file(role['role'])
+            role_arn = role['role']
+            ConfigWriter().write_config_file(role_arn)
 
             duration, env = assume_role(role, saml_assertion, args.duration)
             env['IDP_TOKEN_APP'] = app_name
