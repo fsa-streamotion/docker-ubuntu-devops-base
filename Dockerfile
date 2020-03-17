@@ -53,6 +53,9 @@ RUN git clone \
     cd /tmp/sceptre-stack-termination-protection-hook && \
     python3 setup.py install
 
+#Gridsite tools used by sceptre-make to generate URLs
+RUN apt-get install gridsite-clients
+
 #Install Hub
 RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
     tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
