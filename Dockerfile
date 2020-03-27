@@ -44,7 +44,7 @@ RUN curl \
     mv /tmp/DiffHighlight.pl /usr/local/bin && \ 
     chmod +x /usr/local/bin/DiffHighlight.pl
 
-RUN apt-get install apt-utils colordiff
+RUN apt-get install -y apt-utils colordiff
 
 #Sceptre custom hooks
 RUN git clone \
@@ -54,7 +54,7 @@ RUN git clone \
     python3 setup.py install
 
 #Gridsite tools used by sceptre-make to generate URLs
-RUN apt-get install gridsite-clients
+RUN apt-get install -y gridsite-clients
 
 #Install Hub
 RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
@@ -158,9 +158,6 @@ RUN cd /tmp && \
 RUN echo "complete -C '/usr/local/bin/aws_completer' aws" >> /root/.bashrc
 RUN kubectl completion bash >/etc/bash_completion.d/kubectl
 RUN echo 'complete -F __start_kubectl k' >>~/.bashrc
-
-
-
 
 RUN echo export LC_ALL=C.UTF-8 >> /root/.bashrc
 RUN echo export LANG=C.UTF-8   >> /root/.bashrc
