@@ -132,6 +132,10 @@ ARG KUBESEAL_VERSION=v0.9.6
 RUN wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-linux-amd64 -O kubeseal && \
     install -m 755 kubeseal /usr/local/bin/kubeseal
 
+
+RUN curl -Lo kubebox https://github.com/astefanutti/kubebox/releases/download/v0.8.0/kubebox-linux && chmod +x kubebox && mv kubebox /usr/local/bin/
+
+
 # mkdocs to generate nicer doc from readme files
 RUN pip3 install mkdocs
 
