@@ -45,7 +45,9 @@ RUN curl \
     mv /tmp/DiffHighlight.pl /usr/local/bin && \ 
     chmod +x /usr/local/bin/DiffHighlight.pl
 
-RUN apt-get install -y apt-utils colordiff shellcheck
+#Other tools used in automated tests
+RUN apt-get install -y \
+      apt-utils colordiff shellcheck parallel
 
 #Sceptre custom hooks
 RUN git clone \
