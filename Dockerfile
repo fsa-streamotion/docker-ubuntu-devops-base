@@ -155,8 +155,8 @@ RUN cd /tmp && \
     rm -rf /tmp/* 
 
 RUN cd /tmp && \
-    curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.5.0 sh - && \
-    mv istio-1.5.0/bin/istioctl /usr/local/bin/ && chmod +x /usr/local/bin/istioctl && \
+    curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.0 sh - && \
+    mv istio-1.6.0/bin/istioctl /usr/local/bin/ && chmod +x /usr/local/bin/istioctl && \
     rm -rf /tmp/*
 
 RUN echo "complete -C '/usr/local/bin/aws_completer' aws" >> /root/.bashrc
