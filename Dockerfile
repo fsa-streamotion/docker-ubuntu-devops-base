@@ -138,8 +138,8 @@ RUN curl -Lo kubebox https://github.com/astefanutti/kubebox/releases/download/v0
 
 # mkdocs to generate nicer doc from readme files
 RUN pip3 install mkdocs
-
 RUN pip3 install cfn_flip==1.2.2 ipdb
+
 
 #AWLESS (tool for aws commandline)
 RUN wget https://github.com/wallix/awless/releases/download/v0.1.11/awless-linux-amd64.tar.gz && \
@@ -165,3 +165,7 @@ RUN echo 'complete -F __start_kubectl k' >>~/.bashrc
 
 RUN echo export LC_ALL=C.UTF-8 >> /root/.bashrc
 RUN echo export LANG=C.UTF-8   >> /root/.bashrc
+
+#https://github.com/sajid-moinuddin/kk.git
+ADD add/kk-1.0.dev0.tar.gz /tmp/
+RUN pip3 install /tmp/kk-1.0.dev0.tar.gz
