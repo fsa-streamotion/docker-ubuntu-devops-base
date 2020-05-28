@@ -27,6 +27,7 @@ RUN pip3 install yq==2.10.0 && \
     pip3 install pathlib==1.0.1
 
 #Ruby
+RUN apt-get update
 RUN apt-get install -y libssl-dev libreadline-dev zlib1g-dev
 RUN git clone https://github.com/rbenv/ruby-build.git && \
     PREFIX=/usr/local ./ruby-build/install.sh && \
@@ -44,7 +45,9 @@ RUN curl \
     mv /tmp/DiffHighlight.pl /usr/local/bin && \ 
     chmod +x /usr/local/bin/DiffHighlight.pl
 
-RUN apt-get install -y apt-utils colordiff shellcheck
+#Other tools used in automated tests
+RUN apt-get install -y \
+      apt-utils colordiff shellcheck parallel
 
 #Sceptre custom hooks
 RUN git clone \
