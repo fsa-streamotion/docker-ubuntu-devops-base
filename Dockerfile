@@ -171,4 +171,4 @@ RUN echo export LANG=C.UTF-8   >> /root/.bashrc
 
 #https://github.com/sajid-moinuddin/kk.git
 ADD add/kk-1.0.dev0.tar.gz /tmp/kk-1.0.dev0.tar.gz
-RUN pip3 install /tmp/kk-1.0.dev0.tar.gz
+RUN pip3 install /tmp/kk-1.0.dev0.tar.gz/kk-1.0.dev0
