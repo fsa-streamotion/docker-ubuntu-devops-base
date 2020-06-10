@@ -1,6 +1,6 @@
-FROM kayosportsau/ubuntu-base:1.0.15
+FROM kayosportsau/ubuntu-base:1.0.17
 
-ARG KUBECTL_VERSION=v1.14.9
+ARG KUBECTL_VERSION=v1.15.12
 ARG JX_VERSION=v2.0.800
 ARG EKSCTL_VERSION=latest_release
 ARG KUSTOMIZE_VERSION=2.0.3
