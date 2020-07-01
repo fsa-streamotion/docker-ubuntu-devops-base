@@ -47,6 +47,8 @@ RUN curl \
     mv /tmp/DiffHighlight.pl /usr/local/bin && \ 
     chmod +x /usr/local/bin/DiffHighlight.pl
 
+RUN echo "alias make='make --no-print-directory'" > /root/.bash_aliases
+
 #Other tools used in automated tests
 RUN apt-get install -y \
       apt-utils colordiff shellcheck parallel
