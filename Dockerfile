@@ -24,7 +24,9 @@ RUN pip3 install yq==2.10.0 && \
     pip3 install yamllint==1.20.0 && \
     pip3 install cfn_flip==1.2.2 && \
     pip3 install ipdb==0.12.3 && \
-    pip3 install pathlib==1.0.1
+    pip3 install pathlib==1.0.1 && \
+    pip3 install pylint==2.5.3 && \
+    pip3 install autopep8==1.5.3
 
 #Ruby
 RUN apt-get update
