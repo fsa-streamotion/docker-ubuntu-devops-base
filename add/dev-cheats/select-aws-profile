@@ -35,15 +35,10 @@ select_profile() {
     echo "Fetching profiles from $AWS_CONFIG_FILE"
 
     regex="(?<=^\[profile )(.*${inner_regex})(?=\])"
-
-    # Zsh requires slightly different data structures
-    if [ -n "$BASH" ]; then
-        profiles=$(grep -oP "$regex" "$AWS_CONFIG_FILE")
-    elif [ -n "$ZSH_NAME" ]; then
-        profiles=($(grep -oP "$regex" "$AWS_CONFIG_FILE"))
-    fi
-    
-    select profile in $profiles
+    profiles=()
+    while IFS='' read -r line; do profiles+=("$line"); done < <(grep -oP "$regex" "$AWS_CONFIG_FILE")
+   
+    select profile in  "${profiles[@]}"
     do
         echo "You have selected $profile"
         export AWS_PROFILE="$profile"
