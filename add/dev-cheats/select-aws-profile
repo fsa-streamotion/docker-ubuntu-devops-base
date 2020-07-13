@@ -10,7 +10,7 @@ usage() {
 }
 
 check_dependencies() {
-    if ! grep --version | grep 'GNU grep' 
+    if ! grep --version | grep -q 'GNU grep' 
     then
         echo "Please use GNU grep. brew install grep"
         return 1
