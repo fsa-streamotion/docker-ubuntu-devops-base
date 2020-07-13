@@ -51,7 +51,6 @@ select_profile() {
     done
 }
 
-usage
 check_sourced
 check_deps || return
 select_profile $1
