@@ -38,9 +38,9 @@ select_profile() {
 
     # Zsh requires slightly different data structures
     if [ -n "$BASH" ]; then
-        profiles=$(grep -oP $regex $AWS_CONFIG_FILE)
+        profiles=$(grep -oP "$regex" "$AWS_CONFIG_FILE")
     elif [ -n "$ZSH_NAME" ]; then
-        profiles=($(grep -oP $regex $AWS_CONFIG_FILE))
+        profiles=($(grep -oP "$regex" "$AWS_CONFIG_FILE"))
     fi
     
     select profile in $profiles
@@ -53,4 +53,4 @@ select_profile() {
 
 check_sourced
 check_deps || return
-select_profile $1
+select_profile "$1"
