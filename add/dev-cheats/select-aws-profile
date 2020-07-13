@@ -37,7 +37,7 @@ select_profile() {
 
     regex="(?<=^\[profile )(.*${inner_regex})(?=\])"
     profiles=()
-    while IFS='' read -r line; do profiles+=("$line"); done < <(grep -oP "$regex" "$AWS_CONFIG_FILE")
+    while IFS='' read -r line; do profiles+=("$line"); done < <(grep -oP "$regex" "$AWS_CONFIG_FILE" | sort)
    
     PS3="Select a profile (1-${#profiles[@]}): "
     select profile in  "${profiles[@]}"
