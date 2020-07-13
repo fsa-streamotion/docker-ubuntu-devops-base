@@ -26,15 +26,15 @@ check_sourced() {
 
 select_profile() {
     local search=$1
-    local capture
+    local inner_regex
     local regex
     if [ -n "$search" ]; then
-        capture="${search}.*"
+        inner_regex="${search}.*"
     fi
     
     echo "Fetching profiles from $AWS_CONFIG_FILE"
 
-    regex="(?<=^\[profile )(.*${capture})(?=\])"
+    regex="(?<=^\[profile )(.*${inner_regex})(?=\])"
 
     # Zsh requires slightly different data structures
     if [ -n "$BASH" ]; then
