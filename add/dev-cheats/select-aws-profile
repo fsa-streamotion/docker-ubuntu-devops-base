@@ -9,8 +9,9 @@ usage() {
   exit 1
 }
 
-check_deps() {
-    if [[ -z $(grep --version | grep 'GNU grep') ]]; then
+check_dependencies() {
+    if ! grep --version | grep 'GNU grep' 
+    then
         echo "Please use GNU grep. brew install grep"
         return 1
     fi
@@ -47,5 +48,5 @@ select_profile() {
 }
 
 check_sourced
-check_deps || return
+check_dependencies || return
 select_profile "$1"
