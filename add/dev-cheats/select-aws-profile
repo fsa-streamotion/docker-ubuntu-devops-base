@@ -3,8 +3,9 @@
 AWS_CONFIG_FILE=${AWS_CONFIG_FILE:-"$HOME/.aws/config"} 
 
 usage() {
-  echo "Usage: source $0"
+  echo "Usage: source $0 [SEARCH]"
   echo "A script that selects an AWS profile"
+  echo "SEARCH does a fuzzy match on the profile name"
   exit 1
 }
 
@@ -24,13 +25,22 @@ check_sourced() {
 }
 
 select_profile() {
+    local search=$1
+    local capture
+    local regex
+    if [ -n "$search" ]; then
+        capture="${search}.*"
+    fi
+    
     echo "Fetching profiles from $AWS_CONFIG_FILE"
+
+    regex="(?<=^\[profile )(.*${capture})(?=\])"
 
     # Zsh requires slightly different data structures
     if [ -n "$BASH" ]; then
-        profiles=$(grep -oP "(?<=^\[profile )(.*)(?=\])" $AWS_CONFIG_FILE)
+        profiles=$(grep -oP $regex $AWS_CONFIG_FILE)
     elif [ -n "$ZSH_NAME" ]; then
-        profiles=($(grep -oP "(?<=^\[profile )(.*)(?=\])" $AWS_CONFIG_FILE))
+        profiles=($(grep -oP $regex $AWS_CONFIG_FILE))
     fi
     
     select profile in $profiles
@@ -41,6 +51,7 @@ select_profile() {
     done
 }
 
+usage
 check_sourced
 check_deps || return
-select_profile
+select_profile $1
