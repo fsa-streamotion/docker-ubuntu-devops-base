@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+AWS_CONFIG_FILE=${AWS_CONFIG_FILE:-"$HOME/.aws/config"} 
+
+usage() {
+  echo "Usage: source $0"
+  echo "A script that selects an AWS profile"
+  exit 1
+}
+
+check_deps() {
+    if [ -z $(grep --version | grep 'GNU grep') ]; then
+        echo "Please use GNU grep. brew install grep"
+        return 1
+    fi
+}
+
+check_sourced() {
+    [[ -n $ZSH_EVAL_CONTEXT && $ZSH_EVAL_CONTEXT =~ :file$ ]] || [ "$0" != "${BASH_SOURCE[0]}" ] && sourced=1 || sourced=0
+    if [ $sourced -eq 0 ]; then
+        echo "Please source not execute this script"
+        usage
+    fi
+}
+
+select_profile() {
+    echo "Fetching profiles from $AWS_CONFIG_FILE"
+    
+    # Zsh requires slightly different data structures
+    if [ -n "$BASH" ]; then
+        profiles=$(grep -oP "(?<=^\[profile )(.*)(?=\])" $AWS_CONFIG_FILE)
+    elif [ -n "$ZSH_NAME" ]; then
+        profiles=($(grep -oP "(?<=^\[profile )(.*)(?=\])" $AWS_CONFIG_FILE))
+    fi
+    
+    select profile in $profiles
+    do
+        echo "You have selected $profile"
+        export AWS_PROFILE="$profile"
+        break
+    done
+}
+
+check_sourced
+check_deps || return
+select_profile
