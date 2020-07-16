@@ -49,7 +49,7 @@ RUN curl \
 
 #Other tools used in automated tests
 RUN apt-get install -y \
-      apt-utils colordiff shellcheck parallel
+      apt-utils colordiff shellcheck parallel dnsutils
 
 #Sceptre custom hooks
 RUN git clone \
