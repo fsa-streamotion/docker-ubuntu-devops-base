@@ -19,6 +19,13 @@ RUN mkdir /opt/okta-utils && \
     pip3 install --no-cache-dir aws-sam-cli==0.40.0 && \
     pip3 install sceptre-aws-resolver
 
+#Sceptre and AWS CLI
+RUN pip3 install --no-cache-dir --upgrade \
+      awscli==1.17.8 \
+      aws-sam-cli==0.37.0 \
+      sceptre==2.3.0 \
+      troposphere==2.6.2
+
 #Python tests
 RUN pip3 install yq==2.10.0 && \
     pip3 install yamllint==1.20.0 && \
@@ -26,7 +33,8 @@ RUN pip3 install yq==2.10.0 && \
     pip3 install ipdb==0.12.3 && \
     pip3 install pathlib==1.0.1 && \
     pip3 install pylint==2.5.3 && \
-    pip3 install autopep8==1.5.3
+    pip3 install autopep8==1.5.3 && \
+    pip3 install cfn-flip==1.2.2
 
 #Ruby
 RUN apt-get update
