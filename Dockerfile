@@ -1,50 +1,96 @@
-FROM kayosportsau/ubuntu-base:1.0.17
+FROM ubuntu:bionic
 
 ARG KUBECTL_VERSION=v1.15.12
 ARG JX_VERSION=v2.0.1263
 ARG EKSCTL_VERSION=latest_release
 ARG KUSTOMIZE_VERSION=2.0.3
-ARG VELERO_VERSION="0.11.0"
+ARG VELERO_VERSION=0.11.0
 ARG ARGO_VERSION=v1.2.3
 
-ADD add/dev-cheats /root/dev-cheats
+ENV DEBIAN_FRONTEND=noninteractive
 
+ENV TZ='Australia/Sydney'
+RUN echo $TZ > /etc/timezone
+
+RUN apt-get update && \
+    apt-get -y install software-properties-common && \
+    apt-get -y upgrade git && \
+    apt-get -y install \
+        iputils-ping openjdk-8-jdk ca-certificates groff vim \
+        less bash-completion make curl wget zip telnet \
+        git tree openssl gcc jq tmux golang-cfssl gettext \
+        python3 python3-pip bash-completion tzdata && \
+    apt-get clean && \
+    pip3 install --no-cache-dir --upgrade \
+        awscli==1.17.8 \
+        aws-sam-cli==0.40.0 \
+        sceptre==2.3.0 \
+        troposphere==2.6.2 \
+        cfn-flip==1.2.2 \
+        colorama==0.3.9 \
+        boto3==1.14.47 \
+        botocore==1.17.47 &&
+        sceptre-aws-resolver==0.4 && \
+        sceptre-minify-file-contents-resolver==0.0.2
+
+# Sceptre custom hooks
+RUN git clone \
+      https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
+      /tmp/sceptre-stack-termination-protection-hook && \
+    cd /tmp/sceptre-stack-termination-protection-hook && \
+    python3 setup.py install
+
+# Python tests
+RUN pip3 install --no-cache-dir --upgrade \
+        yq==2.10.0 && \
+        yamllint==1.20.0 && \
+        cfn_flip==1.2.2 && \
+        ipdb==0.12.3 && \
+        pathlib==1.0.1 && \
+        pylint==2.5.3 && \
+        autopep8==1.5.3 && \
+        mypy==0.790 && \
+        parliament==1.2.0
+
+# Bashrc
+RUN echo 'export LC_ALL=C.UTF-8' >> /root/.bashrc && \
+    echo 'export LANG=C.UTF-8'   >> /root/.bashrc && \
+    echo 'export PS1="\u@\h:\w \$ "' >> /root/.bashrc && \
+    echo 'export PATH=/root/bin:$PATH' >> /root/.bashrc && \
+    echo 'export PATH=$PATH:/root/dev-cheats/' >> /root/.bashrc && \
+    echo "alias dep='kubectl get deploy'" >> /root/.bashrc && \
+    echo "alias ing='kubectl get ing'" >> /root/.bashrc && \
+    echo "alias svc='kubectl get svc'" >> /root/.bashrc && \
+    echo "alias pods='kubectl get pods'" >> /root/.bashrc && \
+    echo "alias k=kubectl" >> /root/.bashrc && \
+    echo "alias ap='kubectl get pods --all-namespaces'" >> /root/.bashrc && \
+    echo "alias po='kubectl get pods'" >> /root/.bashrc
+
+# Git config
+RUN git config --global alias.co checkout && \
+    git config --global alias.br branch && \
+    git config --global alias.st status
+
+WORKDIR /src
+
+ADD add/json2yaml /usr/local/bin/json2yaml
+ADD add/dev-cheats /root/dev-cheats
 ADD add/okta /tmp/okta
 
 RUN mkdir /opt/okta-utils && \
     cd /tmp/okta && \
     mv oktashell.sh /usr/local/bin && \
     mv account-mapping.yml oktashell assumerole requirements.txt /opt/okta-utils && \
+    chmod +x /usr/local/bin/json2yaml && \
     pip3 install --no-cache-dir -r /opt/okta-utils/requirements.txt && \
-    pip3 install --no-cache-dir aws-sam-cli==0.40.0 && \
-    pip3 install sceptre-aws-resolver && \
-    pip3 install sceptre-minify-file-contents-resolver
 
-#Sceptre and AWS CLI
-RUN pip3 install --no-cache-dir --upgrade \
-      awscli==1.17.8 \
-      aws-sam-cli==0.37.0 \
-      sceptre==2.3.0 \
-      troposphere==2.6.2
-
-#Python tests
-RUN pip3 install yq==2.10.0 && \
-    pip3 install yamllint==1.20.0 && \
-    pip3 install cfn_flip==1.2.2 && \
-    pip3 install ipdb==0.12.3 && \
-    pip3 install pathlib==1.0.1 && \
-    pip3 install pylint==2.5.3 && \
-    pip3 install autopep8==1.5.3 && \
-    pip3 install cfn-flip==1.2.2
-
-#Ruby
-RUN apt-get update
+# Ruby
 RUN apt-get install -y libssl-dev libreadline-dev zlib1g-dev
 RUN git clone https://github.com/rbenv/ruby-build.git && \
     PREFIX=/usr/local ./ruby-build/install.sh && \
     ruby-build -v 2.4.1 /usr/local
 
-#Shunit2 for Bash unit tests
+# Shunit2 for Bash unit tests
 RUN curl \
       https://raw.githubusercontent.com/kward/shunit2/c47d32d6af2998e94bbb96d58a77e519b2369d76/shunit2 \
       -o /tmp/shunit2 && \
@@ -56,22 +102,15 @@ RUN curl \
     mv /tmp/DiffHighlight.pl /usr/local/bin && \ 
     chmod +x /usr/local/bin/DiffHighlight.pl
 
-#Other tools used in automated tests
+# Other tools used in automated tests
 RUN apt-get install -y \
       apt-utils colordiff shellcheck parallel dnsutils
 
-#Sceptre custom hooks
-RUN git clone \
-      https://github.com/zaro0508/sceptre-stack-termination-protection-hook.git \
-      /tmp/sceptre-stack-termination-protection-hook && \
-    cd /tmp/sceptre-stack-termination-protection-hook && \
-    python3 setup.py install
-
-#Gridsite tools used by sceptre-make to generate URLs
+# Gridsite tools used by sceptre-make to generate URLs
 RUN apt-get install -y gridsite-clients
 
-#Install Hub
-RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz  -o /tmp/hub.tar.gz && \
+# Install Hub
+RUN curl -L https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz -o /tmp/hub.tar.gz && \
     tar -xvzf /tmp/hub.tar.gz -C /tmp && mv /tmp/hub-linux-* /usr/local/hub-linux && \
     echo 'export PATH=$PATH:/usr/local/hub-linux/bin' >> /root/.bashrc        
 
@@ -79,7 +118,7 @@ RUN rm /etc/localtime && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
 
-#kubectl
+# kubectl
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
     curl -L https://amazon-eks.s3-us-west-2.amazonaws.com/${IAM_AUTHENTICATOR_VERSION}/bin/linux/amd64/aws-iam-authenticator -o /usr/local/bin/aws-iam-authenticator && \
     chmod +x /usr/local/bin/kubectl && \
@@ -111,8 +150,7 @@ RUN curl --location "https://github.com/weaveworks/eksctl/releases/download/${EK
     mv /tmp/eksctl /usr/local/bin && \
     echo 'export PATH=$PATH:/root/dev-cheats/' >> /root/.bashrc
 
-
-#install kustomize
+# install kustomize
 RUN curl -O -L https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64 && \
      mv kustomize_${KUSTOMIZE_VERSION}_linux_amd64 /usr/local/bin/kustomize && chmod +x /usr/local/bin/kustomize
 
@@ -121,11 +159,11 @@ ARG KSONNET_VERSION=0.13.1
 RUN wget https://github.com/ksonnet/ksonnet/releases/download/v${KSONNET_VERSION}/ks_${KSONNET_VERSION}_linux_amd64.tar.gz && \
     tar -xzf ks_${KSONNET_VERSION}_linux_amd64.tar.gz && chmod +x ks_${KSONNET_VERSION}_linux_amd64/ks && cp -v ks_${KSONNET_VERSION}_linux_amd64/ks /usr/local/bin/
 
-#argo
+# argo
 RUN wget https://github.com/argoproj/argo-cd/releases/download/${ARGO_VERSION}/argocd-linux-amd64 && \
     chmod +x argocd-linux-amd64 && \mv argocd-linux-amd64 /usr/local/bin/argo
 
-#velero
+# velero
 RUN curl -L https://github.com/heptio/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz -o /tmp/velero.tar.gz && \
     tar -xvzf /tmp/velero.tar.gz -C /tmp && \
     mv /tmp/velero /usr/local/bin/velero && \
@@ -146,16 +184,13 @@ ARG KUBESEAL_VERSION=v0.9.6
 RUN wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-linux-amd64 -O kubeseal && \
     install -m 755 kubeseal /usr/local/bin/kubeseal
 
-
 RUN curl -Lo kubebox https://github.com/astefanutti/kubebox/releases/download/v0.8.0/kubebox-linux && chmod +x kubebox && mv kubebox /usr/local/bin/
-
 
 # mkdocs to generate nicer doc from readme files
 RUN pip3 install mkdocs
 RUN pip3 install cfn_flip==1.2.2 ipdb
 
-
-#AWLESS (tool for aws commandline)
+# AWLESS (tool for aws commandline)
 RUN wget https://github.com/wallix/awless/releases/download/v0.1.11/awless-linux-amd64.tar.gz && \
     tar -xvzf awless-linux-amd64.tar.gz && \
     rm -rf awless-linux-amd64.tar.gz && \
@@ -177,10 +212,7 @@ RUN echo "complete -C '/usr/local/bin/aws_completer' aws" >> /root/.bashrc
 RUN kubectl completion bash >/etc/bash_completion.d/kubectl
 RUN echo 'complete -F __start_kubectl k' >>~/.bashrc
 
-RUN echo export LC_ALL=C.UTF-8 >> /root/.bashrc
-RUN echo export LANG=C.UTF-8   >> /root/.bashrc
-
-#https://github.com/sajid-moinuddin/kk.git
+# https://github.com/sajid-moinuddin/kk.git
 ADD add/kk-1.0.dev0.tar.gz /tmp/kk-1.0.dev0.tar.gz
 RUN pip3 install /tmp/kk-1.0.dev0.tar.gz/kk-1.0.dev0
 
