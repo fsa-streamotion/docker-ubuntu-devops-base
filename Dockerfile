@@ -31,7 +31,8 @@ RUN apt-get update && \
         boto3==1.14.47 \
         botocore==1.17.47 \
         sceptre-aws-resolver==0.4 \
-        sceptre-minify-file-contents-resolver==0.0.2
+        sceptre-minify-file-contents-resolver==0.0.2 \
+        aws-shell
 
 # Sceptre custom hooks
 RUN git clone \
