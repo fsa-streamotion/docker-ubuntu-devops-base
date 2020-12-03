@@ -31,8 +31,7 @@ RUN apt-get update && \
         boto3==1.14.47 \
         botocore==1.17.47 \
         sceptre-aws-resolver==0.4 \
-        sceptre-minify-file-contents-resolver==0.0.2 \
-        aws-shell
+        sceptre-minify-file-contents-resolver==0.0.2 
 
 # Sceptre custom hooks
 RUN git clone \
@@ -171,9 +170,9 @@ RUN curl -L https://github.com/heptio/velero/releases/download/v${VELERO_VERSION
     chmod +x /usr/local/bin/velero && \
     rm -rf /tmp/*
 
-RUN cd /tmp/ && wget https://github.com/kubeflow/kubeflow/releases/download/v1.0/kfctl_v1.0-0-g94c35cf_linux.tar.gz && \
-    tar -xvzf kfctl_v1.0-0-g94c35cf_linux.tar.gz && chmod +x kfctl && mv kfctl /usr/local/bin/ && \
-    rm -rf kfctl_v1.0-0-g94c35cf_linux.tar.gz
+RUN cd /tmp/ && wget https://github.com/kubeflow/kfctl/releases/download/v1.2.0/kfctl_v1.2.0-0-gbc038f9_linux.tar.gz && \
+    tar -xvzf kfctl_v1.2.0-0-gbc038f9_linux.tar.gz && chmod +x kfctl && mv kfctl /usr/local/bin/ && \
+    rm -rf kfctl_v1.2.0-0-gbc038f9_linux.tar.gz
 
 # Node.js
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
