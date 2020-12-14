@@ -1,11 +1,18 @@
 FROM ubuntu:bionic
 
-ARG KUBECTL_VERSION=v1.15.12
+# Latest Kubectl release given by:
+#   curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
+ARG KUBECTL_VERSION=v1.20.0
+
+# Latest Eksctl release can be viewed here:
+#   https://github.com/weaveworks/eksctl/releases
+ARG EKSCTL_VERSION=0.34.0
+
 ARG JX_VERSION=v2.0.1263
-ARG EKSCTL_VERSION=latest_release
 ARG KUSTOMIZE_VERSION=2.0.3
 ARG VELERO_VERSION=0.11.0
 ARG ARGO_VERSION=v1.2.3
+ARG KSONNET_VERSION=0.13.1
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -155,7 +162,6 @@ RUN curl -O -L https://github.com/kubernetes-sigs/kustomize/releases/download/v$
      mv kustomize_${KUSTOMIZE_VERSION}_linux_amd64 /usr/local/bin/kustomize && chmod +x /usr/local/bin/kustomize
 
 # ksonet
-ARG KSONNET_VERSION=0.13.1
 RUN wget https://github.com/ksonnet/ksonnet/releases/download/v${KSONNET_VERSION}/ks_${KSONNET_VERSION}_linux_amd64.tar.gz && \
     tar -xzf ks_${KSONNET_VERSION}_linux_amd64.tar.gz && chmod +x ks_${KSONNET_VERSION}_linux_amd64/ks && cp -v ks_${KSONNET_VERSION}_linux_amd64/ks /usr/local/bin/
 
